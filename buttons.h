@@ -5,4 +5,9 @@
 
 void button_array(GtkWidget *hbox);
 
+void load_button(GtkWidget *widget, gpointer data);
+void play_button(GtkWidget *widget, gpointer data);
+void pause_button(GtkWidget *widget, gpointer data);
+void stop_button(GtkWidget *widget, gpointer data);
+
 #endif /* BUTTONS_H */

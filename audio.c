@@ -53,6 +53,7 @@ int play() {
     mpg123_delete(mh);
     mpg123_exit();
     ao_shutdown();
+    
 
     return 0;
 }

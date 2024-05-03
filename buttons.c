@@ -29,7 +29,9 @@ void stop_button(GtkWidget *widget, gpointer data) {
 
 void button_array(GtkWidget *hbox){
 
-    GtkWidget *right_section = gtk_vbox_new(FALSE, 5);
+    GtkWidget *right_section = gtk_vbox_new(FALSE, 5);  
+    gtk_container_set_border_width(GTK_CONTAINER(right_section), 20);
+
     gtk_box_pack_start(GTK_BOX(hbox), right_section, FALSE, FALSE, 0);
 
     b_load = gtk_button_new_with_label("Load");

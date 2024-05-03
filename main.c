@@ -18,6 +18,10 @@ GtkWidget *button;
 GtkWidget *hbox;
 GtkWidget *vbox;
 GtkWidget *slider;
+GtkWidget *progress_bar;
+
+GtkWidget *vbox_main;
+
 
 
 // Function to handle slider value change event
@@ -25,6 +29,23 @@ void w_slider(GtkWidget *widget, gpointer data) {
     gdouble value = gtk_range_get_value(GTK_RANGE(widget));
     gchar *slider_name = g_object_get_data(G_OBJECT(widget), "name");
     g_print("%s slider value: %.2f\n", slider_name, value);
+}
+
+// Function to update the progress bar
+gboolean update_progress(GtkProgressBar *progress_bar) {
+    double progress = gtk_progress_bar_get_fraction(progress_bar);
+
+    // Update the progress by a small increment
+    progress += 0.1;
+
+    // If the progress reaches 100%, reset it to 0%
+    if (progress >= 1.0) {
+        progress = 0.0;
+    }
+
+    gtk_progress_bar_set_fraction(progress_bar, progress);
+
+    return TRUE;
 }
 
 // Window
@@ -63,17 +84,30 @@ void slider_array(void)
     }
 }
 
+void bar()
+{
+    progress_bar = gtk_progress_bar_new();
+    gtk_box_pack_start(GTK_BOX(vbox_main), progress_bar, FALSE, FALSE, 0);
+    
+    g_timeout_add(500, (GSourceFunc)update_progress, progress_bar);
+}
+
 int main(int argc, char **argv) {
 
     gtk_init(&argc, &argv);
     main_window();
     
     hbox = gtk_hbox_new(FALSE, 5);
+    gtk_container_set_border_width(GTK_CONTAINER(hbox), 50);
     gtk_container_add(GTK_CONTAINER(window), hbox);
 
+    vbox_main = gtk_vbox_new(FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(hbox), vbox_main, TRUE, TRUE, 0);
+
     slider_array();
+    bar();
     button_array(hbox);
-    // Show all widgets
+
     gtk_widget_show_all(window);
 
     gtk_main();
