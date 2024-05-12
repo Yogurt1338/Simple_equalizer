@@ -5,7 +5,7 @@
 #include <mpg123.h>
 #include <ao/ao.h>
 
-#define BITS 16
+#define BITS 8
 
 int play(const char *file_name);
 

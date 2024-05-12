@@ -41,21 +41,21 @@ void w_slider(GtkWidget *widget, gpointer data) {
 }
 
 // Function to update the progress bar
-gboolean update_progress(GtkProgressBar *progress_bar) {
-    double progress = gtk_progress_bar_get_fraction(progress_bar);
+// gboolean update_progress(GtkProgressBar *progress_bar) {
+//     double progress = gtk_progress_bar_get_fraction(progress_bar);
 
-    // Update the progress by a small increment
-    progress += 0.1;
+//     // Update the progress by a small increment
+//     progress += 0.1;
 
-    // If the progress reaches 100%, reset it to 0%
-    if (progress >= 1.0) {
-        progress = 0.0;
-    }
+//     // If the progress reaches 100%, reset it to 0%
+//     if (progress >= 1.0) {
+//         progress = 0.0;
+//     }
 
-    gtk_progress_bar_set_fraction(progress_bar, progress);
+//     gtk_progress_bar_set_fraction(progress_bar, progress);
 
-    return TRUE;
-}
+//     return TRUE;
+// }
 
 // Window
 void main_window(void)
@@ -70,6 +70,7 @@ void main_window(void)
 void slider_array(void)
 {
     const gchar *slider_names[] = {"Slider 1", "Slider 2", "Slider 3", "Slider 4", "Slider 5", "Slider 6"};
+    const gchar *freq_array[] = {"0-3600", "3600-7200", "7200-10800", "10800-14400", "14400-18000", "18000-21600"};
 
     for (int i = 0; i < 6; i++) {
         
@@ -77,7 +78,7 @@ void slider_array(void)
         gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
         // Create a label to display the slider value
-        gchar *label_text = g_strdup_printf("Slider %d:", i+1);
+        gchar *label_text = g_strdup_printf("Slider %d: \n%s\n", i+1, freq_array[i]);
         GtkWidget *label = gtk_label_new(label_text);
         printf("%s",label_text );
         g_free(label_text);
@@ -94,11 +95,11 @@ void slider_array(void)
     }
 }
 
-void bar()
-{
-    progress_bar = gtk_progress_bar_new();
-    gtk_box_pack_start(GTK_BOX(vbox_main), progress_bar, FALSE, FALSE, 0);
-}
+// void bar()
+// {
+//     progress_bar = gtk_progress_bar_new();
+//     gtk_box_pack_start(GTK_BOX(vbox_main), progress_bar, FALSE, FALSE, 0);
+// }
 
 int main(int argc, char **argv) {
 
@@ -115,9 +116,7 @@ int main(int argc, char **argv) {
     // bar();
 
     slider_array();
-
     button_array(hbox);
-
     gtk_widget_show_all(window);
 
     gtk_main();

@@ -6,7 +6,7 @@ LDFLAGS = $(shell pkg-config gtk+-2.0 --libs) -lmpg123 -lao  # Linking flags usi
 TARGET = main  # Output executable name
 
 # Source files
-SRCS = main.c buttons.c audio.c dft.c # Source files including audio.c
+SRCS = main.c buttons.c audio.c fft.c # Source files including audio.c
 OBJS = $(SRCS:.c=.o)  # Corresponding object files
 
 # Default target: compile and link the program

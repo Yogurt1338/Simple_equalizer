@@ -1,6 +1,8 @@
-#include "audio.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <complex.h>
+#include "audio.h"
+#include "fft.h"
 
 int play(const char *file_name) 
 {
@@ -43,8 +45,32 @@ int play(const char *file_name)
 
     /* decode and play */
     while (mpg123_read(mh, buffer, buffer_size, &done) == MPG123_OK){
+        
+        // Allocate a buffer for complex numbers
+        // complex float *complexBuffer = malloc(done * sizeof(complex float));
+        
+        // for (int i = 0; i < done; i++){
+        //     float normalizedSample = buffer[i] / 128.0f;    // Assuming 8-bit signed PCM
+        //     complexBuffer[i] = normalizedSample + 0.0f * I; // Assign the normalized sample to the complex buffer
+        // }
+
+        // Подготовка буферов для FFT
+        float *real = malloc(buffer_size * sizeof(float));
+        float *imag = calloc(buffer_size, sizeof(float)); // Инициализация нулями
+
+        // Нормализация и преобразование в действительные числа для FFT
+        for (size_t i = 0; i < buffer_size; i++) {
+            real[i] = (float)(buffer[i] - 128) / 128.0f;
+        }
+
+        // Вызов функции FFT
+        fftProcessRadix2(real, imag, 1024, rate);
+
+        // Освобождение памяти
+        free(real);
+        free(imag);
+
         ao_play(dev, buffer, done);
-        // here
     }
         
     /* clean up */
