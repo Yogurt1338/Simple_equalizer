@@ -2,12 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BITS 8
-
-int play() {
+int play(const char *file_name) 
+{
+    g_print("Processing file: %s\n", file_name);
     char filename[256];
-    printf("Enter the path to the MP3 file: ");
-    scanf("%255s", filename);
+    sprintf(filename, "%s", file_name);
 
     mpg123_handle *mh;
     unsigned char *buffer;
@@ -43,9 +42,11 @@ int play() {
     dev = ao_open_live(driver, &format, NULL);
 
     /* decode and play */
-    while (mpg123_read(mh, buffer, buffer_size, &done) == MPG123_OK)
+    while (mpg123_read(mh, buffer, buffer_size, &done) == MPG123_OK){
         ao_play(dev, buffer, done);
-
+        // here
+    }
+        
     /* clean up */
     free(buffer);
     ao_close(dev);
@@ -54,6 +55,5 @@ int play() {
     mpg123_exit();
     ao_shutdown();
     
-
     return 0;
 }
