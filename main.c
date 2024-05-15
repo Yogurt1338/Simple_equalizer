@@ -18,44 +18,83 @@
 Для демонстрации работы эквалайзера допускается использовать готовую библиотеку БПФ.
 */
 
-#include <gtk/gtk.h>
-#include "buttons.h"
-#include "audio.h"
+#include "main.h"
 
-GtkWidget *window;
-GtkWidget *button;
-GtkWidget *hbox;
-GtkWidget *vbox;
-GtkWidget *slider;
-GtkWidget *progress_bar;
+void default_value_sliders(){
+    for (int i = 0; i < 6; i++)
+        sliders[i].value_name = i;
+}
 
-GtkWidget *vbox_main;
+void extractNumber(const char *str, int *num) {
+    while (*str) 
+    { 
+        if (*str >= '0' && *str <= '9') 
+        {
+            *num = strtol(str, NULL, 10);
+            break;
+        }
+        str++;
+    }
+}
 
+Slider* add_slider_value(const char* slider_name, int slider_value) {
+    int value_name;
+    extractNumber(slider_name, &value_name);
+    if (value_name < 7 && value_name > 0) 
+    {   
+        switch (value_name)
+        {
+        case 1:
+            sliders[0].value_name = value_name;
+            sliders[0].value = slider_value;
+            break;
+        case 2:
+            sliders[1].value_name = value_name;
+            sliders[1].value = slider_value;
+            break;
+        case 3:
+            sliders[2].value_name = value_name;
+            sliders[2].value = slider_value;
+            break;
+        case 4:
+            sliders[3].value_name = value_name;
+            sliders[3].value = slider_value;
+            break;
+        case 5:
+            sliders[4].value_name = value_name;
+            sliders[4].value = slider_value;
+            break;
+        case 6:
+            sliders[5].value_name = value_name;
+            sliders[5].value = slider_value;
+            break;
+        default:
+            printf("Неверный номер слайдера.\n");
+            break;
+        }
+        
+        #if DEBUG == 1
+            for(int i = 0; i < 6; i++)
+            printf("Слайдер %d - значение %d \n",sliders[i].value_name, sliders[i].value);
+        #endif
+    } 
+
+    return sliders;
+}
 
 
 // Function to handle slider value change event
 void w_slider(GtkWidget *widget, gpointer data) {
     gint value = gtk_range_get_value(GTK_RANGE(widget));
     gchar *slider_name = g_object_get_data(G_OBJECT(widget), "name");
-    g_print("%s slider value: %d\n", slider_name, value);
+    
+    add_slider_value(slider_name, value);
+    
+    #if DEBUG == 2 
+        g_print("%s slider value: %d\n", slider_name, value);
+    #endif
 }
 
-// Function to update the progress bar
-// gboolean update_progress(GtkProgressBar *progress_bar) {
-//     double progress = gtk_progress_bar_get_fraction(progress_bar);
-
-//     // Update the progress by a small increment
-//     progress += 0.1;
-
-//     // If the progress reaches 100%, reset it to 0%
-//     if (progress >= 1.0) {
-//         progress = 0.0;
-//     }
-
-//     gtk_progress_bar_set_fraction(progress_bar, progress);
-
-//     return TRUE;
-// }
 
 // Window
 void main_window(void)
@@ -89,17 +128,14 @@ void slider_array(void)
         gtk_range_set_inverted(slider, TRUE);
         gtk_range_set_value(slider, 0);
         gtk_box_pack_start(GTK_BOX(vbox), slider, TRUE, TRUE, 0);
-
+        
+        g_object_set_data(G_OBJECT(slider), "name", slider_names[i]);
         // Connect the slider's "value-changed" signal to the callback function
         g_signal_connect(slider, "value-changed", G_CALLBACK(w_slider), label);
+
+        default_value_sliders();
     }
 }
-
-// void bar()
-// {
-//     progress_bar = gtk_progress_bar_new();
-//     gtk_box_pack_start(GTK_BOX(vbox_main), progress_bar, FALSE, FALSE, 0);
-// }
 
 int main(int argc, char **argv) {
 
@@ -122,3 +158,26 @@ int main(int argc, char **argv) {
     gtk_main();
     return 0;
 }
+
+// void bar()
+// {
+//     progress_bar = gtk_progress_bar_new();
+//     gtk_box_pack_start(GTK_BOX(vbox_main), progress_bar, FALSE, FALSE, 0);
+// }
+
+// Function to update the progress bar
+// gboolean update_progress(GtkProgressBar *progress_bar) {
+//     double progress = gtk_progress_bar_get_fraction(progress_bar);
+
+//     // Update the progress by a small increment
+//     progress += 0.1;
+
+//     // If the progress reaches 100%, reset it to 0%
+//     if (progress >= 1.0) {
+//         progress = 0.0;
+//     }
+
+//     gtk_progress_bar_set_fraction(progress_bar, progress);
+
+//     return TRUE;
+// }

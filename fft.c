@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "fft.h"
+#include "main.h"
+
+#define COF 10
 
 static size_t reverseBits(size_t x, int n)
 {
@@ -29,16 +32,12 @@ void fftProcessRadix2(float *real, float *imag, size_t N, float rate)
         nStages++;
     }
 
-    if (1 << nStages != N) {
-        printf("ERROR: N = %d is not a power of 2!");
-        return;
-    }
-
     // calculate twiddle factors table for lookup later
     // w[m] = exp(- 2 * PI * m / N)
     // w[m + N/2] = -w[m}
     float *w_real = (float *) malloc((N / 2) * sizeof(float));
     float *w_imag = (float *) malloc((N / 2) * sizeof(float));
+
     for ( size_t i = 0; i < N / 2; i ++) {
         w_real[i] = cosf(2 * M_PI * i / N);
         w_imag[i] = sinf(2 * M_PI * i / N);
@@ -84,19 +83,92 @@ void fftProcessRadix2(float *real, float *imag, size_t N, float rate)
 	    }
     }
 
-    for (size_t i = 0; i < N / 2; i++) { // N/2, потому что симметрия спектра
-        float amplitude = 2.0 * sqrtf(real[i] * real[i] + imag[i] * imag[i]) / N;
-        float frequency = i * rate / N;
-
-        printf("Frequency: %.2f Hz, Amplitude: %.2f\n", frequency, amplitude);
-    }
-
     // cleanup
     free(w_real);
     free(w_imag);
+    // free(afArray);
 }
 
 void ifftProcessRadix2(float *real, float *imag, size_t N, float rate)
 {
-    fftProcessRadix2(imag, real, N, rate);
+    for (size_t i = 0; i < N; i++) {
+        imag[i] = -imag[i];
+    }
+
+    fftProcessRadix2(real, imag, N, rate);
+
+    for (size_t i = 0; i < N; i++) {
+        real[i] = real[i] / N;
+        imag[i] = -imag[i] / N;
+    }
 }
+
+void chaaf(float *real, float *imag, size_t N, float rate)
+{
+    // for (size_t i = 0; i < N / 2; i++) {
+    //     afArray[i].amplitude = 2.0 * sqrtf(real[i] * real[i] + imag[i] * imag[i]) / N;
+    //     afArray[i].frequency = i * rate / N;
+
+    //     #if DEBUG == 1 
+    //         printf("Frequency: %.2f Hz, Amplitude: %.2f\n", afArray[i].frequency, afArray[i].amplitude);
+    //     #endif
+
+    //     for (int freq = 0; freq < 21600; freq+=100){
+    //         if (freq < 3600)
+    //         {
+    //             if (sliders[0].value != 0)
+    //             afArray[freq].amplitude = afArray[freq].amplitude * sliders[0].value / 10;
+    //         }
+    //         if (3600 < freq && freq < 7200)
+    //         {
+    //             if (sliders[1].value != 0)
+    //             afArray[freq].amplitude = afArray[freq].amplitude * sliders[1].value / 10;
+    //         }
+    //         if (7200 < freq && freq < 10800)
+    //         {
+    //             if (sliders[2].value != 0)
+    //             afArray[freq].amplitude = afArray[freq].amplitude * sliders[2].value / 10;
+    //         }
+    //         if (10800 < freq && freq < 14400)
+    //         {
+    //             if (sliders[3].value != 0)
+    //             afArray[freq].amplitude = afArray[freq].amplitude * sliders[3].value / 10;
+    //         }
+    //         if (14400 < freq && freq < 18000)
+    //         {
+    //             if (sliders[4].value != 0)
+    //             afArray[freq].amplitude = afArray[freq].amplitude * sliders[4].value / 10;
+    //         }
+    //         if (18000 < freq)
+    //         {
+    //             if (sliders[5].value != 0)
+    //             afArray[freq].amplitude = afArray[freq].amplitude * sliders[5].value / 10;
+    //         }
+    //     }
+
+    //     #if DEBUG == 2
+    //         printf("freq: %.2f, value: %.2f \n", afArray[i].frequency, afArray[i].amplitude);
+    //     #endif
+    // }
+
+    for (size_t i = 0; i < N / 2; i++) 
+    {    
+        float amplitude = 2.0 * sqrtf(real[i] * real[i] + imag[i] * imag[i]) / N;
+        float frequency = i * rate / N;
+
+        if (frequency < 3600)
+        {
+            if (sliders[0].value != 0)
+            real[i] *= sliders[0].value / COF;
+            real[i] *= sliders[0].value / COF;
+        }
+        if (7200 < frequency && frequency < 10800)
+        {
+            if (sliders[1].value != 0)
+            real[i] *= sliders[1].value / COF;
+            real[i] *= sliders[1].value / COF;
+        }
+        
+    }
+}
+
