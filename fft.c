@@ -14,10 +14,11 @@ void saveToExcel(const char *filename,TYPE_FFT *x, const size_t N, const float r
     // Write header
     fprintf(file, "Frequency, Amplitude\n");
 
-    for (size_t i = 0; i < N; i++) {
+    for (size_t i = 0; i < N/2; i++) {
         float frequency = i * rate / N; // Вычисление частоты
         float amplitude = 2.0 * sqrt(x[i].real * x[i].real + x[i].imag * x[i].imag) / N; // Вычисление амплитуды
-        fprintf(file, "%.5f  %.5f\n", frequency, amplitude);
+        fprintf(file, "%f  %f\n", frequency, amplitude);
+        printf("%f\n",amplitude);
     }
 
     fclose(file);
@@ -96,30 +97,30 @@ void ifftProcessRadix2(float *real, float *imag, const size_t N, const float rat
 void chaaf(TYPE_FFT *x, size_t N, float rate)
 {
 
-    // for (size_t i = 0; i < N / 2; i++) 
-    // {    
-    //     float frequency = i * rate / N; // Вычисление частоты
-    //     float amplitude = 2.0 * sqrt(x[i].real * x[i].real + x[i].imag * x[i].imag) / N; // Вычисление амплитуды
+    for (size_t i = 0; i < N; i++) 
+    {    
+        float frequency = i * rate / N; // Вычисление частоты
+        float amplitude = 2.0 * sqrt(x[i].real * x[i].real + x[i].imag * x[i].imag) / N; // Вычисление амплитуды
     
     // void chaaf(COMPLEX *x, uint32_t N, float rate) {
     //     // Определяем частоту 3600 Гц в отсчетах FFT
-    float freq_3600 = 3600.0f * N / rate;
+    // float freq_3600 = 3600.0f * N / rate;
 
-    // Применение фильтра для исключения частот ниже 3600 Гц
-    for (size_t i = 0; i < N; i++) {
-        // Исключаем частоты ниже 3600 Гц
-        if (i < freq_3600) {
-            x[i].real = 0.0f;
-            x[i].imag = 0.0f;
-        }
-    }
+    // // Применение фильтра для исключения частот ниже 3600 Гц
+    // for (size_t i = 0; i < N; i++) {
+    //     // Исключаем частоты ниже 3600 Гц
+    //     if (i < freq_3600) {
+    //         x[i].real = 0.0f;
+    //         x[i].imag = 0.0f;
+    //     }
+    // }
 // }
 
-        // if (3600 < frequency && frequency < 7200)
-        // {
-        //     if (sliders[1].value > 0) mltp(real, imag, i, sliders[1].value);
-        //     else if (sliders[1].value < 0) s_mltp(real, imag, i, sliders[1].value);
-        // }
+        if (0 < frequency && frequency < 3600)
+        {
+            if (sliders[1].value > 0) mltp(x, i, sliders[1].value);
+            // else if (sliders[1].value < 0) s_mltp(x[i].real, imag, i, sliders[1].value);
+        }
 
         // if (7200 < frequency && frequency < 10800)
         // {
@@ -148,7 +149,7 @@ void chaaf(TYPE_FFT *x, size_t N, float rate)
         #if DEBUG == 4
             printf("freq: %.5f, value: %.5f \n", frequency, amplitude);
         #endif
-    // }
+    }
 }
 
 void mltp(TYPE_FFT *x, size_t i, float q)

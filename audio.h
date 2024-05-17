@@ -9,7 +9,7 @@
 #include "Config.h" 
 
 
-#define  SAMPLE_NODES              (32768)  
+#define  SAMPLE_NODES              (32768*2)  
 COMPLEX x[SAMPLE_NODES];
 #define BITS 8
 
