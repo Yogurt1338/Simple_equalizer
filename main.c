@@ -119,12 +119,12 @@ void slider_array(void)
         // Create a label to display the slider value
         gchar *label_text = g_strdup_printf("Slider %d: \n%s\n", i+1, freq_array[i]);
         GtkWidget *label = gtk_label_new(label_text);
-        printf("%s",label_text );
+        // printf("%s",label_text );
         g_free(label_text);
         gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
         // Create a slider
-        slider = gtk_vscale_new_with_range(-50, 50, 1);
+        slider = gtk_vscale_new_with_range(-5, 5, 1);
         gtk_range_set_inverted(slider, TRUE);
         gtk_range_set_value(slider, 0);
         gtk_box_pack_start(GTK_BOX(vbox), slider, TRUE, TRUE, 0);
@@ -146,11 +146,6 @@ int main(int argc, char **argv) {
     gtk_container_set_border_width(GTK_CONTAINER(hbox), 50);
     gtk_container_add(GTK_CONTAINER(window), hbox);
 
-    // Feature - bar
-    // vbox_main = gtk_vbox_new(FALSE, 5);
-    // gtk_box_pack_start(GTK_BOX(hbox), vbox_main, TRUE, TRUE, 0);
-    // bar();
-
     slider_array();
     button_array(hbox);
     gtk_widget_show_all(window);
@@ -158,26 +153,3 @@ int main(int argc, char **argv) {
     gtk_main();
     return 0;
 }
-
-// void bar()
-// {
-//     progress_bar = gtk_progress_bar_new();
-//     gtk_box_pack_start(GTK_BOX(vbox_main), progress_bar, FALSE, FALSE, 0);
-// }
-
-// Function to update the progress bar
-// gboolean update_progress(GtkProgressBar *progress_bar) {
-//     double progress = gtk_progress_bar_get_fraction(progress_bar);
-
-//     // Update the progress by a small increment
-//     progress += 0.1;
-
-//     // If the progress reaches 100%, reset it to 0%
-//     if (progress >= 1.0) {
-//         progress = 0.0;
-//     }
-
-//     gtk_progress_bar_set_fraction(progress_bar, progress);
-
-//     return TRUE;
-// }

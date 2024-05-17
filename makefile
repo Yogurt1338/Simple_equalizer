@@ -1,13 +1,15 @@
 # Define variables
 CC = gcc  # Compiler
 CFLAGS = $(shell pkg-config gtk+-2.0 --cflags) -I/usr/local/include  # Compilation flags using pkg-config and audio include directory
-LDFLAGS = $(shell pkg-config gtk+-2.0 --libs) -lmpg123 -lao  # Linking flags using pkg-config and audio libraries
+LDFLAGS = $(shell pkg-config gtk+-2.0 --libs) -lmpg123 -lao -lsndfile  # Linking flags using pkg-config and audio libraries
 
 TARGET = main  # Output executable name
 
 # Source files
-SRCS = main.c buttons.c audio.c fft.c # Source files including audio.c
+SRCS = main.c buttons.c audio.c fft.c iir.c z_fft.c z_math.c # Source files including audio.c
 OBJS = $(SRCS:.c=.o)  # Corresponding object files
+
+all: clean $(TARGET)
 
 # Default target: compile and link the program
 all: $(TARGET)
