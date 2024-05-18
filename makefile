@@ -6,7 +6,7 @@ LDFLAGS = $(shell pkg-config gtk+-2.0 --libs) -lmpg123 -lao -lsndfile  # Linking
 TARGET = main  # Output executable name
 
 # Source files
-SRCS = main.c buttons.c audio.c fft.c iir.c z_fft.c z_math.c # Source files including audio.c
+SRCS = main.c buttons.c audio.c staff.c z_fft.c z_math.c # Source files including audio.c
 OBJS = $(SRCS:.c=.o)  # Corresponding object files
 
 all: clean $(TARGET)
@@ -25,4 +25,4 @@ $(TARGET): $(OBJS)
 # Clean up build artifacts
 .PHONY: clean
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -f $(TARGET) $(OBJS) audio

@@ -1,5 +1,3 @@
-// gcc main.c -o main `pkg-config gtk+-2.0 --cflags pkg-config gtk+-2.0 --libs`
-
 /*
 Разработать программное обеспечение с графическим пользовательским интерфейсом на любом языке программирования. 
 Входные тестовые данные для каждого варианта ДЗ должны загружаться из текстового, 
@@ -37,6 +35,7 @@ void extractNumber(const char *str, int *num) {
     }
 }
 
+// Обработчик значений слайдеров
 Slider* add_slider_value(const char* slider_name, int slider_value) {
     int value_name;
     extractNumber(slider_name, &value_name);
@@ -69,7 +68,6 @@ Slider* add_slider_value(const char* slider_name, int slider_value) {
             sliders[5].value = slider_value;
             break;
         default:
-            printf("Неверный номер слайдера.\n");
             break;
         }
         
@@ -83,7 +81,7 @@ Slider* add_slider_value(const char* slider_name, int slider_value) {
 }
 
 
-// Function to handle slider value change event
+// Обработчик слайдеров
 void w_slider(GtkWidget *widget, gpointer data) {
     gint value = gtk_range_get_value(GTK_RANGE(widget));
     gchar *slider_name = g_object_get_data(G_OBJECT(widget), "name");
@@ -96,7 +94,7 @@ void w_slider(GtkWidget *widget, gpointer data) {
 }
 
 
-// Window
+// Окно
 void main_window(void)
 {
     window =  gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -109,28 +107,27 @@ void main_window(void)
 void slider_array(void)
 {
     const gchar *slider_names[] = {"Slider 1", "Slider 2", "Slider 3", "Slider 4", "Slider 5", "Slider 6"};
-    const gchar *freq_array[] = {"0-3600", "3600-7200", "7200-10800", "10800-14400", "14400-18000", "18000-21600"};
+    const gchar *freq_array[] = {"0-3600", "3600-7200", "7200-10800", "10800-14400", "14400-18000", "18000-22050"};
 
     for (int i = 0; i < 6; i++) {
         
         vbox = gtk_vbox_new(FALSE, 5);
         gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
-        // Create a label to display the slider value
+        // Лэйблы
         gchar *label_text = g_strdup_printf("Slider %d: \n%s\n", i+1, freq_array[i]);
         GtkWidget *label = gtk_label_new(label_text);
         // printf("%s",label_text );
         g_free(label_text);
         gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-        // Create a slider
+        // Слайдеры
         slider = gtk_vscale_new_with_range(-5, 5, 1);
         gtk_range_set_inverted(slider, TRUE);
         gtk_range_set_value(slider, 0);
         gtk_box_pack_start(GTK_BOX(vbox), slider, TRUE, TRUE, 0);
         
         g_object_set_data(G_OBJECT(slider), "name", slider_names[i]);
-        // Connect the slider's "value-changed" signal to the callback function
         g_signal_connect(slider, "value-changed", G_CALLBACK(w_slider), label);
 
         default_value_sliders();

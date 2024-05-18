@@ -1,10 +1,3 @@
-/*
- * z_fft.h
- *
- *  Created on: 2013-8-5
- *      Author: monkeyzx
- */
-
 #ifndef _Z_FFT_H
 #define _Z_FFT_H
 
@@ -23,4 +16,4 @@ extern int fft_real(TYPE_FFT *x, uint32_t N);
 extern int ifft(TYPE_FFT *x, uint32_t N);
 extern int ifft_real(TYPE_FFT *x, uint32_t N);
 
-#endif /* Z_FFT_H_ */
+#endif /* _Z_FFT_H_ */

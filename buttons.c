@@ -3,13 +3,11 @@
 
 GtkWidget *b_load;
 GtkWidget *b_play;
-GtkWidget *b_pause;
-GtkWidget *b_stop;
 
-// Global variables to store file path and name
+// Глобал на путь
 char *file_name = NULL;
 
-// Load
+// Загрузка
 void load_button(GtkWidget *widget, gpointer data) {
     g_print("Load!\n");
 
@@ -17,7 +15,7 @@ void load_button(GtkWidget *widget, gpointer data) {
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
     gint res;
 
-    // Create a file chooser dialog
+    // Диалог средатсвами ГТК
     dialog = gtk_file_chooser_dialog_new("Open File",
                                          GTK_WINDOW(data),
                                          action,
@@ -27,23 +25,16 @@ void load_button(GtkWidget *widget, gpointer data) {
                                          GTK_RESPONSE_ACCEPT,
                                          NULL);
 
-    // Run the dialog and capture the user's response
     res = gtk_dialog_run(GTK_DIALOG(dialog));
     if (res == GTK_RESPONSE_ACCEPT) {
-        // Get the selected file name from the dialog
         GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
         file_name = gtk_file_chooser_get_filename(chooser);
 
         g_print("File selected: %s\n", file_name);
-
-        // Here you can do something with the selected file, such as loading its contents
     }
-
-    // Destroy the dialog
     gtk_widget_destroy(dialog);
 }
 
-// Play
 void play_button(GtkWidget *widget, gpointer data) {
     g_print("Play!\n");
     play(file_name);

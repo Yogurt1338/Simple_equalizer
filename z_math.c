@@ -1,17 +1,6 @@
-/*
- * FileName : zx_math.c
- * Author   : xiahouzuoxin
- * Date     : 2013.12.23
- * Version  : v1.0
- * Brief    :  
- */
 #include "z_math.h"
 #include <limits.h>
 
-/*
- * DSPF_sp_maxval
- * @brief 
- */
 void dsp_max_min_val(const TYPE_MAX* x, int nx, TYPE_MAX *max, TYPE_MAX *min)
 {
 	int i;
@@ -46,6 +35,7 @@ void dsp_max_min_val(const TYPE_MAX* x, int nx, TYPE_MAX *max, TYPE_MAX *min)
  * @retval
  *  None
  */
+
 void scale(TYPE_SCALE x[], 
            TYPE_SCALE xmax, 
            TYPE_SCALE xmin,
@@ -62,15 +52,6 @@ void scale(TYPE_SCALE x[],
 	}
 }
 
-
-
-/*
- * COMP_abs
- * @brief 
- * @input params
- * @output params
- * @retval
- */
 float cabs(COMPLEX x)
 {
     float mag = 0.0f;
@@ -81,32 +62,16 @@ float cabs(COMPLEX x)
     return mag;
 }
 
-
-/*
- * @brief   计算二进制表示中1出现的个数的快速算法.
- *          有c个1，则循环c次
- * @inputs  
- * @outputs 
- * @retval  
- */
 int ones_32(uint32_t n)
 {
     unsigned int c =0 ;
     for (c = 0; n; ++c)
     {
-        n &= (n -1) ; // 清除最低位的1
+        n &= (n -1) ; 
     }
     return c ;
 }
 
-/*
- * @brief   
- *   floor{long2(x)}
- *   x must > 0
- * @inputs  
- * @outputs 
- * @retval  
- */
 uint32_t floor_log2_32(uint32_t x)
 {
     x |= (x>>1);

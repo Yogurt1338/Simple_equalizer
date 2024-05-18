@@ -1,6 +1,5 @@
 clear, close all;
-% filename = 'sample-3s.mp3'; % Путь к вашему аудиофайлу
-filename = '1kgc.mp3'; % Путь к вашему аудиофайлу
+filename = 'sample-3s.mp3'; % Путь к вашему аудиофайлу
 
 [y, Fs] = audioread(filename); % Загрузка аудиоданных и частоты дискретизации
 
@@ -18,9 +17,8 @@ plot(t, y); grid on;
 xlabel('Time (s)');
 ylabel('Amplitude');
 title('Input');
-xlim([0.36 0.38]); % Ограничение оси X до 3 секунд
-% 
-% ylim([-2.2 2.2]); 
+xlim([0 0.3]); % Ограничение оси X до 3 секунд
+ylim([-2.2 2.2]); 
 
 filename = 'output.wav'; % Путь к вашему аудиофайлу
 [x, fs] = audioread(filename); % Загрузка аудиоданных и частоты дискретизации
@@ -38,5 +36,5 @@ plot(t, x); grid on;
 xlabel('Time (s)');
 ylabel('Amplitude');
 title('Output');
-xlim([0.36 0.38]); % Ограничение оси X до 3 секунд
-% ylim([-2.2 2.2]); 
+xlim([0 0.3]); % Ограничение оси X до 3 секунд
+ylim([-2.2 2.2]); 

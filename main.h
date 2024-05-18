@@ -1,9 +1,15 @@
 #include <gtk/gtk.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <complex.h>
+#include <math.h>
+
 #include "buttons.h"
 #include "audio.h"
 
-#define DEBUG 4
+#define DEBUG 1
 #define OUTPUT 1
+#define PLAY 1
 
 GtkWidget *window;
 GtkWidget *button;
@@ -20,14 +26,6 @@ typedef struct {
     int value;
 } Slider;
 Slider sliders[6];
-
-// Структура для хранения амплитуды и частоты
-typedef struct {
-    float amplitude;
-    float frequency;
-} AmplitudeFrequency;
-
-AmplitudeFrequency afArray[32768];
 
 void extractNumber(const char *str, int *num);
 Slider* add_slider_value(const char* slider_name, int slider_value);

@@ -4,19 +4,8 @@
 #include <math.h>
 
 #include "audio.h"
-#include "fft.h"
-#include "iir.h"
+#include "staff.h"
 #include "main.h"
-
-size_t findNearestIndexTo1kHz(float sampleRate, size_t N) {
-    return (size_t)(N * 1000 / sampleRate + 0.5); // Округление до ближайшего целого
-}
-
-float measureAmplitudeAt1kHz(float *real, float *imag, size_t N, float rate) {
-    size_t index = findNearestIndexTo1kHz(rate, N);
-    return 2.0 * sqrtf(real[index] * real[index] + imag[index] * imag[index]) / N;
-}
-
 
 int play(const char *file_name) {
     g_print("Processing file: %s\n", file_name);
@@ -36,18 +25,18 @@ int play(const char *file_name) {
     int channels, encoding;
     long rate;
 
-    /* initializations */
+    // иниты
     ao_initialize();
     driver = ao_default_driver_id();
     mpg123_init();
     mh = mpg123_new(NULL, &err);
     buffer = (unsigned char*) malloc(SAMPLE_NODES * sizeof(unsigned char));
 
-    /* open the file and get the decoding format */
+    // читаем параметры 
     mpg123_open(mh, filename);
     mpg123_getformat(mh, &rate, &channels, &encoding);
 
-    /* set the output format and open the output device */
+    // формат вывод и девайс
     format.bits = mpg123_encsize(encoding) * BITS;
     format.rate = rate;
     format.channels = channels;
@@ -55,53 +44,84 @@ int play(const char *file_name) {
     format.matrix = 0;
     dev = ao_open_live(driver, &format, NULL);
 
-    // Open an output file for writing
-    SF_INFO sfinfo;
-    memset(&sfinfo, 0, sizeof(sfinfo));
-    sfinfo.samplerate = rate;
-    sfinfo.channels = channels;
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // Output file format (WAV)
-    SNDFILE *outfile = sf_open("output.wav", SFM_WRITE, &sfinfo);
+    // открыть файл на запись
+    #if OUTPUT == 1
+        SF_INFO sfinfo;
+        memset(&sfinfo, 0, sizeof(sfinfo));
+        sfinfo.samplerate = rate;
+        sfinfo.channels = channels;
+        sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // Output file format (WAV)
+        SNDFILE *outfile = sf_open("output.wav", SFM_WRITE, &sfinfo);
+    #endif
 
-    /* decode and play */
-    
+    // дэкод и воспроизведение
+    // float max_abs_value = 0.0f;
+
     while ((mpg123_read(mh, buffer, SAMPLE_NODES, &done) == MPG123_OK) && done > 0) {
 
         // Нормализация и преобразование в действительные числа для FFT
         short *samples = (short*) buffer;
         size_t sample_count = done / sizeof(short);
-
         
-        // Запись значений в CSV файл
-        for (size_t i = 0; i < sample_count; i++) {
-            x[i].real = samples[i] / 32768.0f;  // Нормализация 16-битных данных
+        // Находим максимальное абсолютное значение в сигнале
+        for (size_t i = 0; i < done; i++) {
+            // float abs_value = fabsf((float)x[i].real);
+            // if (abs_value > max_abs_value) {
+            //     max_abs_value = abs_value;
+            // }
+            
+            // Нормализация 16-битных данных
+            x[i].real = samples[i] / 32768.0f;  
             x[i].imag = 0.0f;
-            // printf("%f\n", x[i].real);
         }
 
-        fft_real(x,sample_count);  
+        // Если 0 то, на самом деле 1
+        // сэйвит первые 0.5 секунд дорожки
+        // if (max_abs_value == 0.0f) {
+        //     max_abs_value = 1.0f;
+        // }
 
-        saveToExcel("output.csv", x, sample_count, rate);
-    
-        chaaf(x, sample_count, rate);
+        fft_real(x,done); 
+        
+        #if DEBUG == 1
+            saveToExcel("test_csv/fft_out.csv", x, done, rate);
+        #endif
 
-        ifft_real(x,sample_count);  
-
-        for (size_t i = 0; i < sample_count; i++) {
-            printf("%f\n", x[i].real);
+        chaaf(x, done, rate);
+        
+        #if DEBUG == 1
+            saveToExcel("test_csv/chaaf_out.csv", x, done, rate);
+        #endif
+        
+        ifft_real(x,done);  
+     
+        for (size_t i = 0; i < done; i++) {
+            float normalized_value = x[i].real;
+            if (normalized_value > 1.0f) {
+                normalized_value = 1.0f;
+            } else if (normalized_value < -1.0f) {
+                normalized_value = -1.0f;
+            }
+            // Обратная нормализация в 16-битные данные
+            samples[i] = (short)(normalized_value * 32767.0f ); 
+            // samples[i] = (short)(normalized_value * 32767.0f / max_abs_value);
+            printf("%i\n", samples[i]);
         }
 
         #if OUTPUT == 1
-            sf_write_raw(outfile, buffer, done);
+            sf_write_raw(outfile, (char*)samples, done);
         #endif
-
-        ao_play(dev, buffer, done);
+        
+        #if PLAY == 1
+            ao_play(dev, (char*)samples, done);
+        #endif
     }
 
-    // Close the output file
-    sf_close(outfile);
+    #if OUTPUT == 1
+        sf_close(outfile);
+    #endif
 
-    /* clean up */
+    // чистим 
     free(buffer);
     ao_close(dev);
     mpg123_close(mh);

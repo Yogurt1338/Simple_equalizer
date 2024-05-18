@@ -1,26 +1,10 @@
-/*
- * FileName : Config.h
- * Author   : xiahouzuoxin
- * Date     : 2013.08.31
- * Version  : v1.0
- * Brief    : place global typedefs and macros here
- */
-
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
 #include <stdio.h>
 #include <math.h>
 
-/* type redefinition */
-/*
-typedef enum
-{
-   FALSE = 0,
-   TRUE  = !FALSE
-} BOOL;
-*/
-
+// Определение
 typedef unsigned int                      UINT16;
 typedef unsigned long                     UINT32;
 typedef unsigned char                     UINT8;
@@ -31,7 +15,6 @@ typedef char                              INT8;
 typedef float                             FP32;
 typedef double                            FP64;
 
-#if !defined(__stdint_h) && !defined(_STDINT_H)
 typedef unsigned long                     uint40_t;
 typedef unsigned int                      uint32_t;
 typedef unsigned short                    uint16_t;
@@ -39,13 +22,9 @@ typedef unsigned char                     uint8_t;
 typedef long                              int40_t;
 typedef int                               int32_t;
 typedef short                             int16_t;
-//typedef char                              int8_t;
 
 typedef float                             fp32_t;
 typedef double                            fp64_t;
-#else
-#include <stdint.h>
-#endif  // #ifndef __stdint_h
 
 typedef long long                         int64_t;
 

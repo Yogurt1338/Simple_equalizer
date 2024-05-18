@@ -1,30 +1,14 @@
-/*
- * zx_fft.c
- *
- * Implementation of Fast Fourier Transform(FFT)
- * and reversal Fast Fourier Transform(IFFT)
- * 
- *  Created on: 2013-8-5
- *      Author: monkeyzx
- *
- * TEST OK 2014.01.14
- * == 2014.01.14
- *   Replace @BitReverse(x,x,N,M) by refrence to 
- *   <The Scientist and Engineer's Guide to Digital Signal Processing>
- */
-
 #include "z_fft.h"
 #include "z_math.h"
 
-const float sin_tb[] = {  // 精度(PI PI/2 PI/4 PI/8 PI/16 ... PI/(2^k))
+const float sin_tb[] = {  // (PI PI/2 PI/4 PI/8 PI/16 ... PI/(2^k))
 0.000000, 1.000000, 0.707107, 0.382683, 0.195090, 0.098017, 
 0.049068, 0.024541, 0.012272, 0.006136, 0.003068, 0.001534, 
 0.000767, 0.000383, 0.000192, 0.000096, 0.000048, 0.000024, 
 0.000012, 0.000006, 0.000003 
 };
 
-
-const float cos_tb[] = {  // 精度(PI PI/2 PI/4 PI/8 PI/16 ... PI/(2^k))
+const float cos_tb[] = {  // (PI PI/2 PI/4 PI/8 PI/16 ... PI/(2^k))
 -1.000000, 0.000000, 0.707107, 0.923880, 0.980785, 0.995185, 
 0.998795, 0.999699, 0.999925, 0.999981, 0.999995, 0.999999, 
 1.000000, 1.000000, 1.000000, 1.000000 , 1.000000, 1.000000, 
@@ -40,6 +24,7 @@ const float cos_tb[] = {  // 精度(PI PI/2 PI/4 PI/8 PI/16 ... PI/(2^k))
  * the @x contains the result of FFT algorithm, so the original data
  * in @x is destroyed, please store them before using FFT.
  */
+
 int fft(TYPE_FFT *x, uint32_t N)
 {
 	int i,j,l,k,ip;
@@ -49,9 +34,7 @@ int fft(TYPE_FFT *x, uint32_t N)
 
 	M = floor_log2_32(N);
 
-	/*
-	 * bit reversal sorting
-	 */
+	//bit reversal sorting
 	l = N >> 1;
 	j = l;
     ip = N-2;
@@ -72,9 +55,7 @@ int fft(TYPE_FFT *x, uint32_t N)
 		j = j + k;
 	}
 
-	/*
-	 * For Loops
-	 */
+	// For Loops
 	for (l=1; l<=M; l++) {   /* loop for ceil{log2(N)} */
 		//le = (int)pow(2,l);
 		le  = (int)(1 << l);
@@ -216,6 +197,7 @@ int ifft(TYPE_FFT *x, uint32_t N)
  * the @x contains the result of FFT algorithm, so the original data
  * in @x is destroyed, please store them before using FFT.
  */
+
 int ifft_real(TYPE_FFT *x, uint32_t N)
 {
 	int k = 0;
