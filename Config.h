@@ -33,26 +33,6 @@ typedef struct {
 	float imag;
 } COMPLEX;
 
-/* Get a byte or word in specified address */
-#define MEM_B(x)                          ( *( (UINT8 *)(x) ) )
-#define MEM_W(x)                          ( *( (UINT32 *)(x) ) )
-
-#define UPCASE( c )                       ( ((c) >= ''a'' && (c) <= ''z'') ?  \
-                                          ( (c) - 0x20) : (c) )
-
-/* Check wether a case is a decimal */
-#define DECCHK( c )                       ((c) >= ''0'' && (c) <= ''9'')
-
-/* Check wether a case is a hex */
-#define HEXCHK( c )                       ( ((c) >= ''0'' && (c) <= ''9'') ||  \
-                                          ( (c) >= ''A'' && (c) <= ''F'') ||  \
-                                          ( (c) >= ''a'' && (c) <= ''f'') )
-
-/* ABS/MAX/MIN */
-#define ABS(x)                            ( ((x) > 0) ? (x) : (-x) ) 
-#define MIN(a, b)                         ( ((a) < (b))?(a):(b) )
-#define MAX(a, b)                         ( ((a) > (b))?(a):(b) ) 
-
 /* Constants */
 #define PI                                (3.1416f)
 #define PI_DIV2                           (1.5708f)

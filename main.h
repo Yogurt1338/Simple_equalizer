@@ -7,7 +7,7 @@
 #include "buttons.h"
 #include "audio.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #define OUTPUT 1
 #define PLAY 1
 

@@ -55,7 +55,6 @@ int play(const char *file_name) {
     #endif
 
     // дэкод и воспроизведение
-    // float max_abs_value = 0.0f;
 
     while ((mpg123_read(mh, buffer, SAMPLE_NODES, &done) == MPG123_OK) && done > 0) {
 
@@ -63,23 +62,11 @@ int play(const char *file_name) {
         short *samples = (short*) buffer;
         size_t sample_count = done / sizeof(short);
         
-        // Находим максимальное абсолютное значение в сигнале
+        // Нормализация 16-битных данных
         for (size_t i = 0; i < done; i++) {
-            // float abs_value = fabsf((float)x[i].real);
-            // if (abs_value > max_abs_value) {
-            //     max_abs_value = abs_value;
-            // }
-            
-            // Нормализация 16-битных данных
             x[i].real = samples[i] / 32768.0f;  
             x[i].imag = 0.0f;
         }
-
-        // Если 0 то, на самом деле 1
-        // сэйвит первые 0.5 секунд дорожки
-        // if (max_abs_value == 0.0f) {
-        //     max_abs_value = 1.0f;
-        // }
 
         fft_real(x,done); 
         
@@ -104,8 +91,6 @@ int play(const char *file_name) {
             }
             // Обратная нормализация в 16-битные данные
             samples[i] = (short)(normalized_value * 32767.0f ); 
-            // samples[i] = (short)(normalized_value * 32767.0f / max_abs_value);
-            printf("%i\n", samples[i]);
         }
 
         #if OUTPUT == 1

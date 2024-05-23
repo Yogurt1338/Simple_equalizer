@@ -1,5 +1,5 @@
 clear, close all;
-filename = 'sample-3s.mp3'; % Путь к вашему аудиофайлу
+filename = 'three_sinusoids.mp3'; % Путь к аудиофайлу
 
 [y, Fs] = audioread(filename); % Загрузка аудиоданных и частоты дискретизации
 
@@ -17,12 +17,13 @@ plot(t, y); grid on;
 xlabel('Time (s)');
 ylabel('Amplitude');
 title('Input');
-xlim([0 0.3]); % Ограничение оси X до 3 секунд
-ylim([-2.2 2.2]); 
+xlim([0 2.5]); % Ограничение оси X
 
-filename = 'output.wav'; % Путь к вашему аудиофайлу
+
+filename = 'output.wav'; % Путь к аудиофайлу
+
 [x, fs] = audioread(filename); % Загрузка аудиоданных и частоты дискретизации
-% x = x * 2;
+
 % Вывод информации о звуковом файле
 fprintf('File: %s\n', filename);
 fprintf('Duration: %.2f seconds\n', length(y) / fs);
@@ -36,5 +37,4 @@ plot(t, x); grid on;
 xlabel('Time (s)');
 ylabel('Amplitude');
 title('Output');
-xlim([0 0.3]); % Ограничение оси X до 3 секунд
-ylim([-2.2 2.2]); 
+xlim([0 2.5]); % Ограничение оси X
