@@ -3,20 +3,16 @@
 
 #include "Config.h"
 
-/* typedefs */
-typedef float TYPE_SCALE;
-typedef float TYPE_MAX;
+// Определение типа COMPLEX из Config.h
+typedef COMPLEX TYPE_FFT;  /* Определение COMPLEX в Config.h */
 
-/* global functions */
-extern void dsp_max_min_val(const TYPE_MAX* x, int nx, TYPE_MAX *max, TYPE_MAX *min);
-extern void scale(TYPE_SCALE x[], 
-           TYPE_SCALE xmax, 
-           TYPE_SCALE xmin,
-           int32_t n, 
-           TYPE_SCALE s_low, 
-           TYPE_SCALE s_high);
-extern float cabs(COMPLEX x);
-extern int ones_32(uint32_t n);  
-extern uint32_t floor_log2_32(uint32_t x);
+/* Определения типов */
+typedef float TYPE_SCALE; // Определение типа для масштабирования
+typedef float TYPE_MAX;   // Определение типа для максимального значения
+
+/* Прототипы глобальных функций */
+uint32_t floor_log2_32(uint32_t x); // Прототип функции для нахождения логарифма по основанию 2 от числа x
+uint32_t reverse_bits(uint32_t num, uint32_t bit_size); // Прототип функции для обращения битов в числе
+void butterfly(TYPE_FFT *x, int le, int le2, float sR, float sI, uint32_t N); // Прототип вспомогательной функции для выполнения операций "бабочки" в FFT
 
 #endif /* _Z_MATH_H */

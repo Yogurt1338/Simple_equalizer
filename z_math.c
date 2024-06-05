@@ -1,84 +1,45 @@
 #include "z_math.h"
 #include <limits.h>
 
-void dsp_max_min_val(const TYPE_MAX* x, int nx, TYPE_MAX *max, TYPE_MAX *min)
-{
-	int i;
+// Вспомогательная функция для выполнения операций "бабочки" в FFT
+void butterfly(TYPE_FFT *x, int le, int le2, float sR, float sI, uint32_t N) {
+    float tR, tI, uR, uI;
+    uR = 1;
+    uI = 0;
 
-    *max = SHRT_MIN;
-    *min = SHRT_MAX;
-	for (i = 0; i < nx; i++) {
-		if (x[i] > *max) {
-			*max = x[i];
-		} else if (x[i] < *min) {
-            *min = x[i];
+    // Цикл по каждому поддиапазону DFT
+    for (int j = 1; j <= le2; j++) {
+        // Цикл по каждой "бабочке"
+        for (int i = j - 1; i < N; i += le) {
+            int ip = i + le2;
+            tR = x[ip].real * uR - x[ip].imag * uI;
+            tI = x[ip].real * uI + x[ip].imag * uR;
+            x[ip].real = x[i].real - tR;
+            x[ip].imag = x[i].imag - tI;
+            x[i].real += tR;
+            x[i].imag += tI;
         }
-	}
-
-    return;
-}
-
-/*
- * scale
- * @brief 
- *  if data not in the same scale, use this function to scale 
- *  them to the same scale, for example [-10000 +10000] 
- * @input params
- *  x: input data
- *  xmax : max value from x[]
- *  xmin : min value from x[]
- *  n    : size of x[]
- *  s_low: low boundary of scale
- *  s_high: high boundary of scale 
- * @output params
- *  x: x[] will be changed after scale funtion and return it back
- * @retval
- *  None
- */
-
-void scale(TYPE_SCALE x[], 
-           TYPE_SCALE xmax, 
-           TYPE_SCALE xmin,
-           int32_t n, 
-           TYPE_SCALE s_low, 
-           TYPE_SCALE s_high)
-{
-    int32_t i = 0;
-	TYPE_SCALE delta_s = s_high - s_low;
-	TYPE_SCALE delta_x = xmax - xmin;
-
-    for (i=0; i<n; i++) {
-        x[i] = delta_s * (x[i] - xmin) / delta_x + s_low; 
-	}
-}
-
-float cabs(COMPLEX x)
-{
-    float mag = 0.0f;
-
-    mag = x.real*x.real + x.imag*x.imag;
-    mag = sqrt(mag);
-
-    return mag;
-}
-
-int ones_32(uint32_t n)
-{
-    unsigned int c =0 ;
-    for (c = 0; n; ++c)
-    {
-        n &= (n -1) ; 
+        // Обновление коэффициентов вращения
+        tR = uR;
+        uR = tR * sR - uI * sI;
+        uI = tR * sI + uI * sR;
     }
-    return c ;
 }
 
-uint32_t floor_log2_32(uint32_t x)
-{
-    x |= (x>>1);
-    x |= (x>>2);
-    x |= (x>>4);
-    x |= (x>>8);
-    x |= (x>>16);
+// Функция для нахождения логарифма по основанию 2 от числа x
+uint32_t floor_log2_32(uint32_t x) {
+    int log = 0;
+    while (x >>= 1) ++log; // Сдвиг x вправо до тех пор, пока он не станет 0
+    return log;
+}
 
-    return (ones_32(x>>1));
+// Функция для обращения битов в числе
+uint32_t reverse_bits(uint32_t num, uint32_t bit_size) {
+    uint32_t reverse_num = 0;
+    for (uint32_t i = 0; i < bit_size; i++) {
+        if (num & (1 << i)) { // Проверка, установлен ли бит на позиции i
+            reverse_num |= 1 << ((bit_size - 1) - i); // Установка соответствующего бита в обратном порядке
+        }
+    }
+    return reverse_num;
 }
