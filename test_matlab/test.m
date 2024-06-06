@@ -17,7 +17,7 @@ plot(t, y); grid on;
 xlabel('Time (s)');
 ylabel('Amplitude');
 title('Input');
-xlim([0 2.5]); % Ограничение оси X
+xlim([0 0.2]); % Ограничение оси X
 
 
 filename = 'output.wav'; % Путь к аудиофайлу

@@ -63,26 +63,26 @@ int play(const char *file_name) {
         size_t sample_count = done / sizeof(short);
         
         // Нормализация 16-битных данных
-        for (size_t i = 0; i < done; i++) {
+        for (size_t i = 0; i < sample_count; i++) {
             x[i].real = samples[i] / 32768.0f;  
             x[i].imag = 0.0f;
         }
 
-        fft_real(x,done); 
+        fft_real(x,sample_count); 
         
         #if DEBUG == 1
-            saveToExcel("test_csv/fft_out.csv", x, done, rate);
+            saveToExcel("test_csv/fft_out.csv", x, sample_count, rate);
         #endif
 
-        chaaf(x, done, rate);
+        chaaf(x, sample_count, rate);
         
         #if DEBUG == 1
-            saveToExcel("test_csv/chaaf_out.csv", x, done, rate);
+            saveToExcel("test_csv/chaaf_out.csv", x, sample_count, rate);
         #endif
         
-        ifft_real(x,done);  
+        ifft_real(x,sample_count);  
      
-        for (size_t i = 0; i < done; i++) {
+        for (size_t i = 0; i < sample_count; i++) {
             float normalized_value = x[i].real;
             if (normalized_value > 1.0f) {
                 normalized_value = 1.0f;
@@ -90,7 +90,7 @@ int play(const char *file_name) {
                 normalized_value = -1.0f;
             }
             // Обратная нормализация в 16-битные данные
-            samples[i] = (short)(normalized_value * 32767.0f ); 
+            samples[i] = (short)(normalized_value * 32767.0f); 
         }
 
         #if OUTPUT == 1
